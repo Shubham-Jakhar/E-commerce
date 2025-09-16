@@ -108,7 +108,14 @@ exports.getSignin = async (req, res, next) => {
         };
 
         req.session.user = userData;
-        res.status(200).json({ isLoggedin: true, data: req.session.user });
+        req.session.save((err) => {
+            if (err) {
+                console.error("Error saving session:", err);
+                return res.status(500).json({ isLoggedin: false, message: "Error saving session" });
+            }
+            console.log("Session saved, sending cookie.");
+            res.status(200).json({ isLoggedin: true, data: req.session.user });
+        });
     } catch (err) {
         console.error("Error during login:", err);
         res.status(500).json({ isLoggedin: false, message: "Internal server error" });
