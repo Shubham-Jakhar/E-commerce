@@ -88,7 +88,6 @@ exports.postSignup = [
 exports.getSignin = async (req, res, next) => {
     const email = req.params.email;
     const password = req.params.password;
-
     try {
         const user = await User.findOne({ email: email });
         if (!user) {

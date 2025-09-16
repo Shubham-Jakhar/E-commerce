@@ -33,7 +33,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(session({
@@ -64,11 +64,11 @@ app.get("/api/session", (req, res) => {
 
 
 app.use((req, res, next) => {
-    res.status(404).send("<h1>LOL!   404</h1>");
+    res.status(404).send("LOL!   404");
 });
 
 
-const PORT = process.env.PORT || 3000;
+const PORT =  3000;
 mongoose.connect(DB_PATH).then(() => {
     // app.listen(PORT, () => {
         console.log(`server is running on http://localhost:${PORT}`);

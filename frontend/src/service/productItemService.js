@@ -1,4 +1,4 @@
-const backendUrl=import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const getItemsFromServer = async () => {
     const response = await fetch(`${backendUrl}/api/getItems`);
     const items = await response.json();
@@ -76,23 +76,23 @@ export const getSessionFromServer = async () => {
     return await response.json();
 }
 
-export const postAddToCart = async (id,size) => {
-    const response = await fetch(`${backendUrl}/api/addToCart/${id}`,{
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({size:size}),
-  credentials: "include" 
-});
+export const postAddToCart = async (id, size) => {
+    const response = await fetch(`${backendUrl}/api/addToCart/${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ size: size }),
+        credentials: "include"
+    });
     return response.json();
 }
 
-export const getCartDataFromserver = async ()=>{
-    const response = await fetch(`${backendUrl}/api/getCartItem`,{
+export const getCartDataFromserver = async () => {
+    const response = await fetch(`${backendUrl}/api/getCartItem`, {
         credentials: "include"
     });
-    const serverItem=await response.json();
+    const serverItem = await response.json();
     return serverItem.cart.map(mapCartItemsToLocalItem);
 }
 
@@ -102,14 +102,14 @@ const mapCartItemsToLocalItem = (serverItem) => {
         name: serverItem.item.name,
         price: serverItem.item.price,
         image: Array.isArray(serverItem.item.image) ? serverItem.item.image[0] : serverItem.item.image,
-        size:serverItem.size,
+        size: serverItem.size,
         quantity: serverItem.quantity
     }
 }
 
-export const deleteItemFromCart = async (id)=>{
-    const response = await fetch(`${backendUrl}/api/cart/deleteItem/${id}`,{
+export const deleteItemFromCart = async (id) => {
+    const response = await fetch(`${backendUrl}/api/cart/deleteItem/${id}`, {
         credentials: "include"
     });
-    
+
 }
