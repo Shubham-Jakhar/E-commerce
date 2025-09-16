@@ -16,10 +16,22 @@ const store = new mongodbStore({
     collection: "sessions"
 })
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://e-commerce-frontend-mocha-one.vercel.app" // Your deployed frontend URL
+];
+
 app.use(express.urlencoded());
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+  origin: function (origin, callback) {
+    // Allow requests if the origin is in our list
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 }));
 app.use(session({
     secret: "shubham jkhar",
