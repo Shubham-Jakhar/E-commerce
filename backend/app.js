@@ -1,0 +1,61 @@
+const express = require('express');
+const app = express();
+
+
+const rootDir = require('./utils/pathUtils');
+const path = require('path');
+const { default: mongoose} = require('mongoose');
+const cors = require('cors');
+const userRouter = require('./routes/userRouter');
+const session = require('express-session');
+const mongodbStore = require('connect-mongodb-session')(session);
+const DB_PATH = "mongodb+srv://root:Shubham%402005@shubham.h2zydpf.mongodb.net/EcommerceApp?retryWrites=true&w=majority&appName=shubham";
+
+const store = new mongodbStore({
+    uri: DB_PATH,
+    collection: "sessions"
+})
+
+app.use(express.urlencoded());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
+app.use(session({
+    secret: "shubham jkhar",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+        maxAge: 1000 * 3600 * 24,
+        httpOnly: true,
+    }
+}))
+app.use(express.json());
+app.use(express.static(path.join(rootDir, "public")));
+app.use("/api", userRouter);
+app.get("/api/session", (req, res) => {
+    if (req.session.user) {
+        return res.json({ isLoggedin: true, user: req.session.user });
+    }
+    res.json({ isLoggedin: false });
+});
+
+
+
+
+app.use((req, res, next) => {
+    res.status(404).send("<h1>LOL!   404</h1>");
+});
+
+
+const PORT = process.env.PORT || 3000;
+mongoose.connect(DB_PATH).then(() => {
+    // app.listen(PORT, () => {
+        console.log(`server is running on http://localhost:${PORT}`);
+    // })
+}).catch(error => {
+    console.log("error while connecting mongoose", error);
+})
+
+module.exports = app;
