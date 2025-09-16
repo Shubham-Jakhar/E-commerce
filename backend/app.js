@@ -18,13 +18,12 @@ const store = new mongodbStore({
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://e-commerce-frontend-mocha-one.vercel.app" // Your deployed frontend URL
+  "https://e-commerce-frontend-mocha-one.vercel.app" 
 ];
 
 app.use(express.urlencoded());
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests if the origin is in our list
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -33,16 +32,20 @@ app.use(cors({
   },
   credentials: true,
 }));
+app.set("trust proxy", 1); 
+
 app.use(session({
-    secret: "shubham jkhar",
+    secret: "shubham jkhar", 
     resave: false,
     saveUninitialized: false,
     store: store,
     cookie: {
-        maxAge: 1000 * 3600 * 24,
+        maxAge: 1000 * 3600 * 24, // 1 day
         httpOnly: true,
+        secure: true,
+        sameSite: 'none'
     }
-}))
+}));
 app.use(express.json());
 app.use(express.static(path.join(rootDir, "public")));
 app.get("/", (req, res) => {
