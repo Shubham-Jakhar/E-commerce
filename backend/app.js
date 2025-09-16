@@ -20,8 +20,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://e-commerce-frontend-mocha-one.vercel.app" 
 ];
+app.set("trust proxy", 1); 
 
-app.use(express.urlencoded());
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -32,7 +32,9 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.set("trust proxy", 1); 
+
+app.use(express.urlencoded());
+app.use(express.json());
 
 app.use(session({
     secret: "shubham jkhar", 
@@ -46,7 +48,6 @@ app.use(session({
         sameSite: 'none'
     }
 }));
-app.use(express.json());
 app.use(express.static(path.join(rootDir, "public")));
 app.get("/", (req, res) => {
     res.status(200).json({ 
@@ -60,8 +61,6 @@ app.get("/api/session", (req, res) => {
     }
     res.json({ isLoggedin: false });
 });
-
-
 
 
 app.use((req, res, next) => {
