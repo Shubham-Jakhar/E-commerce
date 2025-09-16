@@ -33,6 +33,11 @@ app.use(session({
 }))
 app.use(express.json());
 app.use(express.static(path.join(rootDir, "public")));
+app.get("/", (req, res) => {
+    res.status(200).json({ 
+        message: "✅ Backend is deployed and running successfully!" 
+    });
+});
 app.use("/api", userRouter);
 app.get("/api/session", (req, res) => {
     if (req.session.user) {
