@@ -6,12 +6,12 @@ import { useSession } from "../context/sessionContext";
 
 const ProductItemDetails = ({ item }) => {
     const [itemSize, setItemSize] = useState(null);
-    const {setCartItems}=useSession();
+    const { refreshCart } = useSession();
     const handleSubmit = async (id) => {
         if (itemSize) {
             const response = await postAddToCart(id, itemSize);
             if (response.success) {
-                setCartItems(prev => [...prev, { id, size: itemSize, price: item.price }]);
+                refreshCart();
                 alert("item added to cart");
             } else if (!response.success) {
                 alert("please login");
@@ -102,8 +102,8 @@ const ProductItemDetails = ({ item }) => {
                                         <div key={index} className="product-size-available">
                                             <div
                                                 className={`px-4 py-2 border text-sm font-['Outfit'] cursor-pointer transition-all duration-200 text-center min-w-[3rem] ${itemSize === size
-                                                        ? 'border-black bg-[#C9C3F4] text-black'
-                                                        : 'border-gray-300 hover:border-black hover:bg-gray-50'
+                                                    ? 'border-black bg-[#C9C3F4] text-black'
+                                                    : 'border-gray-300 hover:border-black hover:bg-gray-50'
                                                     }`}
                                                 onClick={() => setItemSize(size)}
                                             >

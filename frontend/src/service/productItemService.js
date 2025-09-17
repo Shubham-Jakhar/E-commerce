@@ -55,44 +55,37 @@ export const postUserDetailsFromServer = async (data) => {
 export const getUserDetailsFromServer = async (data) => {
     const response = await fetch(`${backendUrl}/api/signin/${data.email}/${data.password}`, {
         method: "GET",
-        credentials: "include",
     });
-    return await response.json();
-}
+    const result = await response.json();
+    if (result.isLoggedin && result.token) {
+        localStorage.setItem("token", result.token);
+    }
+    return result;
+};
 
-export const postSignoutUserFromServer = async () => {
-    const response = await fetch(`${backendUrl}/api/signout`, {
-        method: "POST",
-        credentials: "include"
-    });
-    return await response.json();
-}
-
-export const getSessionFromServer = async () => {
-    const response = await fetch(`${backendUrl}/api/session`, {
-        method: "GET",
-        credentials: "include",
-    });
-    return await response.json();
-}
+const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export const postAddToCart = async (id, size) => {
     const response = await fetch(`${backendUrl}/api/addToCart/${id}`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ size: size }),
-        credentials: "include"
     });
     return response.json();
 }
 
 export const getCartDataFromserver = async () => {
     const response = await fetch(`${backendUrl}/api/getCartItem`, {
-        credentials: "include"
+        headers: { ...getAuthHeaders() },
     });
     const serverItem = await response.json();
+    if (!serverItem.cart) return [];
     return serverItem.cart.map(mapCartItemsToLocalItem);
 }
 
@@ -109,7 +102,8 @@ const mapCartItemsToLocalItem = (serverItem) => {
 
 export const deleteItemFromCart = async (id) => {
     const response = await fetch(`${backendUrl}/api/cart/deleteItem/${id}`, {
-        credentials: "include"
+        headers: { ...getAuthHeaders() },
+        method: "DELETE",
     });
-
+    return response.json();
 }

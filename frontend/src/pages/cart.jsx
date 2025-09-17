@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import CartPost from "../components/cartPost";
 import DummyLoadingStructure from "../components/dummyLoadingStructure";
-import { getCartDataFromserver } from "../service/productItemService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSession } from "../context/sessionContext";
 
 const CartPage = () => {
-    const [cartItems, setCartItems] = useState();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    const { refreshCart, cartItems } = useSession();
+
     useEffect(() => {
-        const fetchItems = async () => {
-            const response = await getCartDataFromserver();
-            setCartItems(response);
-            setLoading(false);
-        }
-        fetchItems();
-    }, [cartItems]);
+        refreshCart();
+        setLoading(false);
+    }, []);
     let Subtotal = 0;
     let discount = 0;
     let total = 0;
@@ -36,8 +34,6 @@ const CartPage = () => {
     return (
         <div className="cart-page bg-white font-['Prata'] serif py-12 lg:py-16">
             <div className="max-w-6xl mx-auto px-6 lg:px-8">
-
-                {/* Page Heading */}
                 <div className="heading text-center mb-12 lg:mb-16">
                     <div className="inline-flex items-center space-x-6">
                         <div className="w-16 h-px bg-black"></div>
@@ -47,11 +43,7 @@ const CartPage = () => {
                         <div className="w-16 h-px bg-black"></div>
                     </div>
                 </div>
-
-                {/* Main Cart Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-
-                    {/* Cart Items */}
                     <div className="cart-posts lg:col-span-2">
                         <div className="space-y-6">
                             {!loading ? (
@@ -64,7 +56,7 @@ const CartPage = () => {
                                         <p className="text-gray-600 font-['Outfit'] text-lg mb-6">
                                             Your cart is empty
                                         </p>
-                                        <button className="bg-black text-white px-8 py-3 text-sm font-['Outfit'] font-medium tracking-wider uppercase hover:bg-[#C9C3F4] hover:text-black transition-all duration-300 border border-black hover:border-[#C9C3F4]">
+                                        <button className="bg-black text-white px-8 py-3 text-sm font-['Outfit'] font-medium tracking-wider uppercase hover:bg-[#C9C3F4] hover:text-black transition-all duration-300 border border-black hover:border-[#C9C3F4]" onClick={() => navigate("/")} >
                                             Continue Shopping
                                         </button>
                                     </div>
@@ -76,23 +68,15 @@ const CartPage = () => {
 
                         </div>
                     </div>
-
-                    {/* Cart Summary */}
                     <div className="cart-total lg:col-span-1">
                         <div className="bg-gray-50 border border-gray-200 p-8">
-
-                            {/* Summary Header */}
                             <div className="mb-8">
                                 <h2 className="text-lg font-normal text-black tracking-[0.1em] uppercase">
                                     Cart Totals
                                 </h2>
                                 <div className="w-12 h-px bg-black mt-3"></div>
                             </div>
-
-                            {/* Summary Details */}
                             <div className="space-y-6 font-['Outfit']">
-
-                                {/* Subtotal */}
                                 <div className="flex justify-between items-center py-3 border-b border-gray-200">
                                     <div className="text-sm font-medium text-gray-700 uppercase tracking-wide">
                                         Subtotal
@@ -101,8 +85,6 @@ const CartPage = () => {
                                         $ {Subtotal}
                                     </div>
                                 </div>
-
-                                {/* Discount */}
                                 <div className="flex justify-between items-center py-3 border-b border-gray-200">
                                     <div className="text-sm font-medium text-gray-700 uppercase tracking-wide">
                                         Discount
@@ -111,8 +93,6 @@ const CartPage = () => {
                                         -$ {discount}
                                     </div>
                                 </div>
-
-                                {/* Shipping */}
                                 <div className="flex justify-between items-center py-3 border-b border-gray-200">
                                     <div className="text-sm font-medium text-gray-700 uppercase tracking-wide">
                                         Shipping Fee
@@ -121,8 +101,6 @@ const CartPage = () => {
                                         Free
                                     </div>
                                 </div>
-
-                                {/* Total */}
                                 <div className="flex justify-between items-center py-4 mt-6 border-t-2 border-black">
                                     <div className="text-base font-semibold text-black uppercase tracking-[0.1em]">
                                         Total
@@ -132,17 +110,13 @@ const CartPage = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Checkout Button */}
                             <div className="mt-8">
                                 <Link to={`/placeOrder/${total}`} >
-                                <button className="w-full bg-black text-white py-4 px-6 text-sm font-['Outfit'] font-medium tracking-[0.2em] uppercase hover:bg-[#C9C3F4] hover:text-black transition-all duration-300 border border-black hover:border-[#C9C3F4]">
-                                    Proceed to Checkout
-                                </button>
+                                    <button className="w-full bg-black text-white py-4 px-6 text-sm font-['Outfit'] font-medium tracking-[0.2em] uppercase hover:bg-[#C9C3F4] hover:text-black transition-all duration-300 border border-black hover:border-[#C9C3F4]">
+                                        Proceed to Checkout
+                                    </button>
                                 </Link>
                             </div>
-
-                            {/* Additional Options */}
                             <div className="mt-6 space-y-3">
                                 <Link to={"/"}>
                                     <button className="w-full text-center text-sm font-['Outfit'] text-gray-600 hover:text-black transition-colors duration-200 uppercase tracking-wide">

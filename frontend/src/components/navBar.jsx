@@ -5,22 +5,16 @@ import logo from "/assets/logo.png";
 import { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
-import { postSignoutUserFromServer } from "../service/productItemService";
 import { useSession } from "../context/sessionContext";
 
 const NavBar = () => {
-    const {session, setSession, cartItems} = useSession();
+    const { token, logout, cartItems } = useSession();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [searchBar, setSearchBar] = useState(false);
-    const handleSignout=async()=>{
-        const response = await postSignoutUserFromServer();
-        if(!response.isLoggedin){
-            setSession(null);
-        }
-    }
+
     let cartQuantity = 0;
-    if(cartItems){
-     cartQuantity = cartItems.length;
+    if (cartItems) {
+        cartQuantity = cartItems.length;
     }
     return (
         <div className="nav-bar bg-white border-b border-gray-100 shadow-sm font-['Outfit'] sticky top-0 z-50">
@@ -40,11 +34,11 @@ const NavBar = () => {
                             </div>
                         </Link>
                         <Link to={"/collection"}>
-                        <div className="collection-page">
-                            <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
-                                Collection
+                            <div className="collection-page">
+                                <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
+                                    Collection
+                                </div>
                             </div>
-                        </div>
                         </Link>
                         <div className="about-page">
                             <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
@@ -64,29 +58,29 @@ const NavBar = () => {
                             </div>
                         </div>
                         <Link to={"/cart"}>
-                        <div className="cart-page">
-                            <div className="relative text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer">
-                                <IoBagHandleOutline className="h-5 w-5" />
-                                <div className="absolute -top-2 -right-2">
-                                    <p className="text-xs font-semibold bg-[#C9C3F4] text-black rounded-full h-4 w-4 flex items-center justify-center min-w-[16px]">
-                                        {cartQuantity}
-                                    </p>
+                            <div className="cart-page">
+                                <div className="relative text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer">
+                                    <IoBagHandleOutline className="h-5 w-5" />
+                                    <div className="absolute -top-2 -right-2">
+                                        <p className="text-xs font-semibold bg-[#C9C3F4] text-black rounded-full h-4 w-4 flex items-center justify-center min-w-[16px]">
+                                            {cartQuantity}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </Link>
-                        {!session ? <Link to={"/signin"}>
-                        <div className="login">
-                            <div className="flex items-center space-x-2 text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer">
-                                <div className="text-sm font-medium tracking-wide uppercase">
-                                    Login
+                        {!token ? <Link to={"/signin"}>
+                            <div className="login">
+                                <div className="flex items-center space-x-2 text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer">
+                                    <div className="text-sm font-medium tracking-wide uppercase">
+                                        Login
+                                    </div>
+                                    <span>
+                                        <TbLogin2 className="h-4 w-4" />
+                                    </span>
                                 </div>
-                                <span>
-                                    <TbLogin2 className="h-4 w-4" />
-                                </span>
                             </div>
-                        </div>
-                        </Link> : <div className="logout" onClick={()=>handleSignout()}>
+                        </Link> : <div className="logout" onClick={logout}>
                             <div className="flex items-center space-x-2 text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer">
                                 <div className="text-sm font-medium tracking-wide uppercase">
                                     Logout
@@ -135,10 +129,10 @@ const NavBar = () => {
                 <div className="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-full z-40">
                     <div className="flex flex-col items-center py-4 space-y-4 text-sm font-medium tracking-wide">
                         <Link to={"/"}>
-                        <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">Home</div>
+                            <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">Home</div>
                         </Link>
                         <Link to={"/collection"}>
-                        <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">Collection</div>
+                            <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">Collection</div>
                         </Link>
                         <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">About</div>
                         <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">Contact Us</div>

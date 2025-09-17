@@ -2,6 +2,8 @@ const User = require('../models/user');
 const Items = require('../models/items');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'shubham jakhar';
 exports.getItems = async (req, res, next) => {
     const productItems = await Items.find();
     res.json(productItems);
@@ -106,36 +108,31 @@ exports.getSignin = async (req, res, next) => {
             userType: user.userType,
         };
 
-        req.session.user = userData;
-        req.session.save((err) => {
-            if (err) {
-                console.error("Error saving session:", err);
-                return res.status(500).json({ isLoggedin: false, message: "Error saving session" });
-            }
-            console.log("Session saved, sending cookie.");
-            res.status(200).json({ isLoggedin: true, data: req.session.user });
-        });
+        const token = jwt.sign(userData, JWT_SECRET, { expiresIn: '2D' });
+        res.json({ isLoggedin: true, token, user: userData });
     } catch (err) {
         console.error("Error during login:", err);
         res.status(500).json({ isLoggedin: false, message: "Internal server error" });
     }
 };
 
-exports.postSignout = async (req, res, next) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Error destroying session:", err);
-            return res.status(500).json({ isLoggedin: true, message: "Failed to log out" });
-        }
-        res.clearCookie("connect.sid");
-        res.status(200).json({ isLoggedin: false, message: "Logged out successfully" });
-    });
-}
+exports.verifyToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.userId = decoded.id; // userId comes from token
+        next();
+    } catch (err) {
+        return res.status(403).json({ message: 'Invalid token' });
+    }
+};
 
 exports.postAddToCart = async (req, res, next) => {
     const { size } = req.body;
     const itemId = req.params.id;
-    const userId = req.session.user.id.toString();
+    const userId = req.userId;
     const user = await User.findById(userId);
     if (user) {
         user.cart.push({ item: itemId, size });
@@ -148,18 +145,22 @@ exports.postAddToCart = async (req, res, next) => {
 }
 
 exports.getCartdata = async (req, res, next) => {
-    const userId = req.session.user.id.toString();
-    if (userId) {
-        const response = await User.findById(userId).populate('cart.item');
-        res.status(200).json(response);
-    } else {
-        res.status(402).json({ success: false })
+    try {
+        const userId = req.userId;
+        if (userId) {
+            const response = await User.findById(userId).populate('cart.item');
+            res.status(200).json(response);
+        } else {
+            res.status(401).json({ success: false, message: 'User not authenticated' });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
 
 exports.deleteCartItem = async (req, res, next) => {
     const itemId = req.params.id;
-    const userId = req.session.user.id.toString();
+    const userId = req.userId;
     if (userId) {
         const user = await User.findById(userId);
         user.cart = user.cart.filter(cartItem => cartItem.item.toString() != itemId);

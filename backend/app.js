@@ -4,23 +4,16 @@ const app = express();
 
 const rootDir = require('./utils/pathUtils');
 const path = require('path');
-const { default: mongoose} = require('mongoose');
+const { default: mongoose } = require('mongoose');
 const cors = require('cors');
 const userRouter = require('./routes/userRouter');
-const session = require('express-session');
-const mongodbStore = require('connect-mongodb-session')(session);
 const DB_PATH = "mongodb+srv://root:Shubham%402005@shubham.h2zydpf.mongodb.net/EcommerceApp?retryWrites=true&w=majority&appName=shubham";
-
-const store = new mongodbStore({
-    uri: DB_PATH,
-    collection: "sessions"
-})
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://e-commerce-frontend-mocha-one.vercel.app" 
+  "https://e-commerce-frontend-mocha-one.vercel.app"
 ];
-app.set("trust proxy", 1); 
+app.set("trust proxy", 1);
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -36,45 +29,28 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(session({
-    secret: "shubham jkhar", 
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-    cookie: {
-        maxAge: 1000 * 3600 * 24, // 1 day
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none'
-    }
-}));
+
 app.use(express.static(path.join(rootDir, "public")));
 app.get("/", (req, res) => {
-    res.status(200).json({ 
-        message: "✅ Backend is deployed and running successfully!" 
-    });
+  res.status(200).json({
+    message: "✅ Backend is deployed and running successfully!"
+  });
 });
 app.use("/api", userRouter);
-app.get("/api/session", (req, res) => {
-    if (req.session.user) {
-        return res.json({ isLoggedin: true, user: req.session.user });
-    }
-    res.json({ isLoggedin: false });
-});
 
 
 app.use((req, res, next) => {
-    res.status(404).send("LOL!   404");
+  res.status(404).send("LOL!   404");
 });
 
 
-const PORT =  3000;
+const PORT = 3000;
 mongoose.connect(DB_PATH).then(() => {
-    // app.listen(PORT, () => {
-        console.log(`server is running on http://localhost:${PORT}`);
-    // })
+  //  app.listen(PORT, () => {
+  console.log(`server is running on http://localhost:${PORT}`);
+  // });
 }).catch(error => {
-    console.log("error while connecting mongoose", error);
+  console.log("error while connecting mongoose", error);
 })
 
 module.exports = app;

@@ -5,7 +5,7 @@ import { useSession } from "../context/sessionContext";
 
 const SignIn = () => {
     const navigate = useNavigate();
-    const {session,setSession}= useSession();
+    const { login } = useSession();
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -22,8 +22,8 @@ const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const response = await getUserDetailsFromServer(formData);
-        if (response.isLoggedin) {
-            setSession(response);
+        if (response.isLoggedin && response.token) {
+            login(response.user, response.token);
             navigate("/");
         }
     }
