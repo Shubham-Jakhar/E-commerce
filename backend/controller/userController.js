@@ -108,7 +108,7 @@ exports.getSignin = async (req, res, next) => {
             userType: user.userType,
         };
 
-        const token = jwt.sign(userData, JWT_SECRET, { expiresIn: '2D' });
+        const token = jwt.sign(userData, JWT_SECRET, { expiresIn: '5D' });
         res.json({ isLoggedin: true, token, user: userData });
     } catch (err) {
         console.error("Error during login:", err);

@@ -15,7 +15,7 @@ const CartPost = ({ cartItem }) => {
             <div className="flex items-center space-x-6">
                 <div className="image flex-shrink-0">
                     <img
-                        src={`/assets/${cartItem.image}`}
+                        src={cartItem.image.startsWith("http") ? cartItem.image : `/assets/${cartItem.image}`}
                         alt={cartItem.name}
                         className="w-20 h-20 lg:w-24 lg:h-24 object-cover border border-gray-200"
                     />

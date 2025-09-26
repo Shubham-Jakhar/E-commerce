@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import CartPost from "../components/cartPost";
-import DummyLoadingStructure from "../components/dummyLoadingStructure";
 import { Link, useNavigate } from "react-router-dom";
 import { useSession } from "../context/sessionContext";
+import DummyLoadingAdminHomeList from "../components/dummyAdminHomeList";
 
 const CartPage = () => {
     const navigate = useNavigate();
@@ -62,7 +62,7 @@ const CartPage = () => {
                                     </div>
                                 )
                             ) : (
-                                <DummyLoadingStructure />
+                                <DummyLoadingAdminHomeList />
                             )}
 
 

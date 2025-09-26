@@ -18,7 +18,8 @@ const mapgetItemsToLocalItem = (serverItem) => {
         image: Array.isArray(serverItem.image) ? serverItem.image[0] : serverItem.image,
         bestseller: serverItem.bestseller,
         category: serverItem.category,
-        subCategory: serverItem.subCategory
+        subCategory: serverItem.subCategory,
+        date: serverItem.date
     }
 }
 

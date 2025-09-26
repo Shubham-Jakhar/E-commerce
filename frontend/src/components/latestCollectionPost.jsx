@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
 const LatestCollectionPost = ({ items }) => {
-    function getRandomItems(arr, count) {
-        const shuffled = [...arr].sort(() => 0.5 - Math.random()); 
-        return shuffled.slice(0, count);
+    function getLatestItems(arr, count) {
+        return [...arr]
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, count);
     }
-    const finalItems = getRandomItems(items, 12);
+
+    const finalItems = getLatestItems(items, 12);
     const navigate = useNavigate();
     return (
         <div className="collection-post grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -14,7 +16,7 @@ const LatestCollectionPost = ({ items }) => {
                 <div key={index} className="post group cursor-pointer" onClick={() => navigate(`/product/${item.id}`)}>
                     <div className="image relative overflow-hidden bg-gray-50 border border-gray-100">
                         <img
-                            src={`/assets/${item.image}`}
+                            src={item.image.startsWith("http") ? item.image : `/assets/${item.image}`}
                             alt={item.name}
                             className="w-full h-64 lg:h-72 object-cover transition-transform duration-700 group-hover:scale-105"
                         />

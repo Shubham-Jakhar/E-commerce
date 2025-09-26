@@ -9,7 +9,7 @@ const BestCollectionPost = ({ items }) => {
                 <div key={index} className="post group cursor-pointer" onClick={()=>navigate(`/product/${item.id}`)}>
                     <div className="image relative overflow-hidden bg-gray-50 border border-gray-100">
                         <img
-                            src={`/assets/${item.image}`}
+                            src={item.image.startsWith("http") ? item.image : `/assets/${item.image}`}
                             alt={item.name}
                             className="w-full h-64 lg:h-72 object-cover transition-transform duration-700 group-hover:scale-105"
                         />

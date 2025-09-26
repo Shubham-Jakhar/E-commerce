@@ -8,7 +8,8 @@ const itemsSchema=mongoose.Schema({
     bestseller:{type:Boolean,default:false},
     sizes:[{type:String,required:true}],
     category:{type:String,required:true},
-    subCategory:{type:String,required:true}
+    subCategory:{type:String,required:true},
+    date:{type:Date,default:Date.now},
 });
 
 module.exports=mongoose.model("Items",itemsSchema);

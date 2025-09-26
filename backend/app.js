@@ -7,6 +7,7 @@ const path = require('path');
 const { default: mongoose } = require('mongoose');
 const cors = require('cors');
 const userRouter = require('./routes/userRouter');
+const adminRouter = require('./routes/adminRouter');
 const DB_PATH = "mongodb+srv://root:Shubham%402005@shubham.h2zydpf.mongodb.net/EcommerceApp?retryWrites=true&w=majority&appName=shubham";
 
 const allowedOrigins = [
@@ -37,6 +38,7 @@ app.get("/", (req, res) => {
   });
 });
 app.use("/api", userRouter);
+app.use("/admin", adminRouter);
 
 
 app.use((req, res, next) => {
@@ -46,9 +48,9 @@ app.use((req, res, next) => {
 
 const PORT = 3000;
 mongoose.connect(DB_PATH).then(() => {
-  //  app.listen(PORT, () => {
+   app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);
-  // });
+  });
 }).catch(error => {
   console.log("error while connecting mongoose", error);
 })

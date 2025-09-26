@@ -23,8 +23,13 @@ const SignIn = () => {
         e.preventDefault();
         const response = await getUserDetailsFromServer(formData);
         if (response.isLoggedin && response.token) {
+            if(response.user.userType === "seller"){
+            login(response.user, response.token);
+                navigate("/admin/home");
+            } else{
             login(response.user, response.token);
             navigate("/");
+            }
         }
     }
     return (

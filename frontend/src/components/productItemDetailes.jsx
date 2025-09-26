@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { postAddToCart } from "../service/productItemService";
 import ProductDescription from "./productDescription";
 import RelatedProductList from "./relatedProductsList";
@@ -7,6 +7,12 @@ import { useSession } from "../context/sessionContext";
 const ProductItemDetails = ({ item }) => {
     const [itemSize, setItemSize] = useState(null);
     const { refreshCart } = useSession();
+    const [mainImage, setMainImage] = useState(item.image[0]);
+    useEffect(() => {
+    if (item.image[0]) {
+      setMainImage(item.image[0]);
+    }
+  }, [item]);
     const handleSubmit = async (id) => {
         if (itemSize) {
             const response = await postAddToCart(id, itemSize);
@@ -29,30 +35,35 @@ const ProductItemDetails = ({ item }) => {
                             <div className="flex gap-4">
                                 <div className="small-image flex flex-col gap-3 w-20">
                                     <img
-                                        src={`/assets/${item.image[0]}`}
+
+                                        src={item.image[0].startsWith("http") ? item.image[0] : `/assets/${item.image[0]}`}
                                         alt={item.name}
                                         className="w-full aspect-square object-cover border border-gray-200 cursor-pointer hover:border-black transition-colors duration-200"
+                                        onClick={()=>setMainImage(item.image[0])}
                                     />
                                     <img
-                                        src={`/assets/${item.image[1] ? item.image[1] : item.image[0]}`}
+                                        src={item.image[1] ? (item.image[1].startsWith("http") ? item.image[1] : `/assets/${item.image[1]}`) : (item.image[0].startsWith("http") ? item.image[0] : `/assets/${item.image[0]}`)}
                                         alt={item.name}
                                         className="w-full aspect-square object-cover border border-gray-200 cursor-pointer hover:border-black transition-colors duration-200"
+                                        onClick={()=>setMainImage(item.image[1]?item.image[1]:item.image[0])}
                                     />
                                     <img
-                                        src={`/assets/${item.image[2] ? item.image[2] : item.image[0]}`}
+                                        src={item.image[2] ? (item.image[2].startsWith("http") ? item.image[2] : `/assets/${item.image[2]}`) : (item.image[0].startsWith("http") ? item.image[0] : `/assets/${item.image[0]}`)}
                                         alt={item.name}
                                         className="w-full aspect-square object-cover border border-gray-200 cursor-pointer hover:border-black transition-colors duration-200"
+                                        onClick={()=>setMainImage(item.image[2]?item.image[2]:item.image[0])}
                                     />
                                     <img
-                                        src={`/assets/${item.image[3] ? item.image[3] : item.image[0]}`}
+                                        src={item.image[3] ? (item.image[3].startsWith("http") ? item.image[3] : `/assets/${item.image[3]}`) : (item.image[0].startsWith("http") ? item.image[0] : `/assets/${item.image[0]}`)}
                                         alt={item.name}
                                         className="w-full aspect-square object-cover border border-gray-200 cursor-pointer hover:border-black transition-colors duration-200"
+                                        onClick={()=>setMainImage(item.image[3]?item.image[3]:item.image[0])}
                                     />
                                 </div>
 
                                 <div className="big-image flex-1">
                                     <img
-                                        src={`/assets/${item.image[0]}`}
+                                        src={mainImage.startsWith("http")? mainImage:`/assets/${mainImage}`}
                                         alt={item.name}
                                         className="w-full h-96 lg:h-[600px] object-cover border border-gray-200"
                                     />

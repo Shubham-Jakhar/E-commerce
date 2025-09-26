@@ -8,14 +8,18 @@ import SignIn from "./pages/signin"
 import SignUp from "./pages/signUp"
 import CartPage from "./pages/cart"
 import PlaceOrder from "./pages/placeOrder"
+import { useSession } from "./context/sessionContext"
+import AdminHome from "./pages/adminHome"
+import AddProduct from "./components/addProduct"
 
 function App() {
   const location=useLocation();
   const hideLayout=["/signin","/signup"];
   const shouldHide=hideLayout.includes(location.pathname);
+  const {user}= useSession();
 
   return (
-    <div className=" ">
+    <div>
       {!shouldHide && <NavBar/>}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -25,6 +29,8 @@ function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/cart" element={<CartPage/>}/>
         <Route path="/placeOrder/:total" element={<PlaceOrder/>}/>
+        <Route path="/admin/home" element={<AdminHome/>}/>
+        <Route path="/add/product" element={<AddProduct/>}/>
       </Routes>
       {!shouldHide && <Footer />}
     </div>
