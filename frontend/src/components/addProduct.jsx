@@ -122,9 +122,7 @@ const AddProduct = () => {
                 <h1 className="text-2xl font-['Prata'] text-black uppercase tracking-wide mb-8">
                     {product ? "EDIT" : "Add"} Product
                 </h1>
-
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Name */}
                     <div>
                         <label className="block text-xs text-black uppercase mb-2">Product Name</label>
                         <input
@@ -137,8 +135,6 @@ const AddProduct = () => {
                             required
                         />
                     </div>
-
-                    {/* Description */}
                     <div>
                         <label className="block text-xs text-black uppercase mb-2">Description</label>
                         <textarea
@@ -151,8 +147,6 @@ const AddProduct = () => {
                             required
                         />
                     </div>
-
-                    {/* Price */}
                     <div>
                         <label className="block text-xs text-black uppercase mb-2">Price ($)</label>
                         <input
@@ -165,8 +159,6 @@ const AddProduct = () => {
                             required
                         />
                     </div>
-
-                    {/* Image Upload */}
                     <div>
                         <label className="block text-xs text-black uppercase mb-2">Product Images (max 4)</label>
                         <input
@@ -176,13 +168,11 @@ const AddProduct = () => {
                             onChange={handleImageChange}
                             className="w-full p-3 border border-gray-300 text-sm text-black"
                         />
-
-                        {/* Preview boxes */}
-                        <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div className="flex gap-4 mt-4">
                             {[0, 1, 2, 3].map(i => (
                                 <div
                                     key={i}
-                                    className="w-full h-32 border flex items-center justify-center bg-gray-50"
+                                    className="aspect-square w-24 border flex items-center justify-center bg-gray-50"
                                 >
                                     {formData.imagePreviews[i] ? (
                                         <img
@@ -196,9 +186,8 @@ const AddProduct = () => {
                                 </div>
                             ))}
                         </div>
-                    </div>
 
-                    {/* Category & Subcategory */}
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs text-black uppercase mb-2">Category</label>
@@ -231,8 +220,6 @@ const AddProduct = () => {
                             </select>
                         </div>
                     </div>
-
-                    {/* Sizes */}
                     <div>
                         <label className="block text-xs text-black uppercase mb-2">Available Sizes</label>
                         <div className="flex gap-2 flex-wrap">
@@ -251,8 +238,6 @@ const AddProduct = () => {
                             ))}
                         </div>
                     </div>
-
-                    {/* Bestseller */}
                     <div className="flex items-center space-x-3">
                         <input
                             type="checkbox"
@@ -266,14 +251,12 @@ const AddProduct = () => {
                             Mark as Bestseller
                         </label>
                     </div>
-
-                    {/* Submit Button */}
                     <div className="pt-4">
                         <button
                             type="submit"
                             className="w-full bg-black text-white p-3 text-sm uppercase tracking-wide hover:bg-gray-800"
                         >
-                            Add Product
+                            {product ? "Update" : "Add"} Product
                         </button>
                     </div>
                 </form>

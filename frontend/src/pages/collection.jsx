@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getItemsFromServer } from "../service/productItemService";
 import DummyLoadingStructure from "../components/dummyLoadingStructure";
 import CollectionPost from "../components/collectionPost";
-import Select from "react-select";
 
 const Collection = () => {
     const [items, setItems] = useState([]);

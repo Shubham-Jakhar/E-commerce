@@ -1,14 +1,59 @@
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { FaAmazonPay } from "react-icons/fa";
 import { CgPaypal } from "react-icons/cg";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSession } from "../context/sessionContext";
+import { postOrderDetailsToServer } from "../service/productItemService";
 const PlaceOrder = () => {
-    const {total} = useParams();
+    const navigate = useNavigate();
+    const { total } = useParams();
+    const { cartItems, user, refreshCart } = useSession();
+    const [orderDetail, setOrderDetail] = useState({
+        userId: user.id,
+        items: [],
+        totalAmount: 0
+    });
+    useEffect(() => {
+        const items = cartItems.map(item => ({
+            itemId: item.id,
+            size: item.size,
+            quantity: item.quantity,
+            price: item.price,
+        }));
+        setOrderDetail({
+            userId: user.id,
+            items,
+            totalAmount: total
+        });
+    }, [cartItems]);
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        houseNo: "",
+        area: "",
+        district: "",
+        state: "",
+        pincode: "",
+        mobileNo: ""
+    });
+    const handleOnChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }))
+    }
+    const handleSubmit = async () => {
+        const response = await postOrderDetailsToServer(orderDetail);
+        alert(response.message);
+        if(response.success){
+            navigate("/user/orders");
+            refreshCart();
+        }
+    }
     return (
         <div className="place-order-page bg-white font-['Prata'] serif py-12 lg:py-16">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
-
-                {/* Page Heading */}
                 <div className="text-center mb-12 lg:mb-16">
                     <div className="inline-flex items-center space-x-6">
                         <div className="w-16 h-px bg-black"></div>
@@ -18,11 +63,7 @@ const PlaceOrder = () => {
                         <div className="w-16 h-px bg-black"></div>
                     </div>
                 </div>
-
-                {/* Main Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-
-                    {/* Delivery Information */}
                     <div className="delivery-info">
                         <div className="bg-gray-50 border border-gray-200 p-8">
                             <div className="mb-8">
@@ -33,7 +74,6 @@ const PlaceOrder = () => {
                             </div>
 
                             <form className="space-y-6">
-                                {/* Name Fields */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="first-name">
                                         <label htmlFor="firstName" className="block text-xs font-['Outfit'] font-medium text-black uppercase tracking-[0.2em] mb-3">
@@ -43,6 +83,8 @@ const PlaceOrder = () => {
                                             type="text"
                                             id="firstName"
                                             name="firstName"
+                                            value={formData.firstName}
+                                            onChange={handleOnChange}
                                             className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                             placeholder="Enter first name"
                                             required
@@ -56,6 +98,8 @@ const PlaceOrder = () => {
                                             type="text"
                                             id="lastName"
                                             name="lastName"
+                                            value={formData.lastName}
+                                            onChange={handleOnChange}
                                             className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                             placeholder="Enter last name"
                                             required
@@ -72,6 +116,8 @@ const PlaceOrder = () => {
                                         type="text"
                                         id="houseNo"
                                         name="houseNo"
+                                        value={formData.houseNo}
+                                        onChange={handleOnChange}
                                         className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                         placeholder="Enter house number or building name"
                                         required
@@ -86,6 +132,8 @@ const PlaceOrder = () => {
                                         type="text"
                                         id="area"
                                         name="area"
+                                        value={formData.area}
+                                        onChange={handleOnChange}
                                         className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                         placeholder="Enter area or street name"
                                         required
@@ -101,6 +149,8 @@ const PlaceOrder = () => {
                                             type="text"
                                             id="district"
                                             name="district"
+                                            value={formData.district}
+                                            onChange={handleOnChange}
                                             className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                             placeholder="Enter district"
                                             required
@@ -114,6 +164,8 @@ const PlaceOrder = () => {
                                             type="text"
                                             id="state"
                                             name="state"
+                                            value={formData.state}
+                                            onChange={handleOnChange}
                                             className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                             placeholder="Enter state"
                                             required
@@ -130,6 +182,8 @@ const PlaceOrder = () => {
                                             type="text"
                                             id="pincode"
                                             name="pincode"
+                                            value={formData.pincode}
+                                            onChange={handleOnChange}
                                             className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                             placeholder="Enter pincode"
                                             required
@@ -143,6 +197,8 @@ const PlaceOrder = () => {
                                             type="tel"
                                             id="mobileNo"
                                             name="mobileNo"
+                                            value={formData.mobileNo}
+                                            onChange={handleOnChange}
                                             className="w-full px-4 py-3 border border-gray-300 bg-white text-sm font-['Outfit'] text-black placeholder-gray-500 focus:outline-none focus:border-black transition-colors duration-200"
                                             placeholder="Enter mobile number"
                                             required
@@ -152,11 +208,7 @@ const PlaceOrder = () => {
                             </form>
                         </div>
                     </div>
-
-                    {/* Order Summary & Payment */}
                     <div className="space-y-8">
-
-                        {/* Cart Total */}
                         <div className="cart-total">
                             <div className="bg-gray-50 border border-gray-200 p-8">
                                 <div className="mb-6">
@@ -182,8 +234,6 @@ const PlaceOrder = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Payment Methods */}
                         <div className="payment">
                             <div className="bg-gray-50 border border-gray-200 p-8">
                                 <div className="mb-6">
@@ -203,7 +253,7 @@ const PlaceOrder = () => {
                                             className="w-4 h-4 text-black border-2 border-gray-300 focus:ring-black focus:ring-2 focus:ring-offset-0 mr-4"
                                         />
                                         <label htmlFor="gpay" className="flex items-center cursor-pointer text-sm font-['Outfit'] font-medium text-black">
-                                            <span className="mr-3 text-lg"><FaAmazonPay/></span>
+                                            <span className="mr-3 text-lg"><FaAmazonPay /></span>
                                             Google Pay
                                         </label>
                                     </div>
@@ -217,7 +267,7 @@ const PlaceOrder = () => {
                                             className="w-4 h-4 text-black border-2 border-gray-300 focus:ring-black focus:ring-2 focus:ring-offset-0 mr-4"
                                         />
                                         <label htmlFor="paytm" className="flex items-center cursor-pointer text-sm font-['Outfit'] font-medium text-black">
-                                            <span className="mr-3 text-lg"><CgPaypal/></span>
+                                            <span className="mr-3 text-lg"><CgPaypal /></span>
                                             Paytm
                                         </label>
                                     </div>
@@ -232,15 +282,14 @@ const PlaceOrder = () => {
                                             defaultChecked
                                         />
                                         <label htmlFor="cod" className="flex items-center cursor-pointer text-sm font-['Outfit'] font-medium text-black">
-                                            <span className="mr-3 text-lg"><FaRegMoneyBillAlt/></span>
+                                            <span className="mr-3 text-lg"><FaRegMoneyBillAlt /></span>
                                             Cash on Delivery
                                         </label>
                                     </div>
                                 </div>
-
-                                {/* Place Order Button */}
                                 <div className="place-order">
-                                    <button className="w-full bg-black text-white py-4 px-6 text-sm font-['Outfit'] font-medium tracking-[0.2em] uppercase hover:bg-[#C9C3F4] hover:text-black transition-all duration-300 border border-black hover:border-[#C9C3F4]">
+                                    <button className="w-full bg-black text-white py-4 px-6 text-sm font-['Outfit'] font-medium tracking-[0.2em] uppercase hover:bg-[#C9C3F4] hover:text-black transition-all duration-300 border border-black hover:border-[#C9C3F4]"
+                                        onClick={handleSubmit}>
                                         Place Order
                                     </button>
                                 </div>

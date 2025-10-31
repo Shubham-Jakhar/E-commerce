@@ -60,3 +60,22 @@ export const postUpdateProduct = async (data, productId) =>{
     });
     return await response.json();
 }
+
+export const getAdminOrdersFromServer = async () =>{
+    const response = await fetch(`${backendUrl}/admin/getAllOrders`,{
+        headers:{...getAuthHeaders()}
+    });
+    return await response.json();
+}
+
+export const postUpdateStatusOfOrder = async (status,orderId) =>{
+    const response = await fetch(`${backendUrl}/admin/updateStatus/${orderId}`,{
+        headers:{
+            ...getAuthHeaders(),
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({status})
+    });
+    return await response.json();
+}

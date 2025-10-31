@@ -1,4 +1,6 @@
 const Items = require('../models/items');
+const orders = require('../models/orders');
+const OrderSchema = require('../models/orders');
 
 exports.getAllProducts = async (req, res) => {
   const productItems = await Items.find();
@@ -63,5 +65,33 @@ exports.updateProduct = async (req, res) => {
     }
   } catch(err){
     res.status(500).json({message: "Server error", error: err.message});
+  }
+}
+
+exports.getAllOrders = async (req, res) =>{
+  try{
+    const oredrs = await OrderSchema.find().populate('items.item').lean();
+    res.json(oredrs);
+  } catch(err){
+    res.status(500).json({message: "Server error", error: err.message});
+  }
+}
+
+exports.updateStatusOfOrder = async (req, res) =>{
+  const {orderId} = req.params;
+  const {status} = req.body;
+  try{
+    const order = await OrderSchema.findById(orderId);
+    if(order){
+      order.items.forEach(item=>{
+        item.status = status;
+      });
+      await order.save();
+      res.json({success:true, message: "Order status updated successfully"});
+    } else{
+      return res.status(404).json({success:false, message: "Order not found"});
+    }
+  } catch(err){
+    res.status(500).json({success:false, message: "Server error", error: err.message});
   }
 }

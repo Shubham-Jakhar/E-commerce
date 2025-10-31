@@ -108,3 +108,26 @@ export const deleteItemFromCart = async (id) => {
     });
     return response.json();
 }
+
+export const postOrderDetailsToServer = async (data) => {
+    const response = await fetch(`${backendUrl}/api/placeOrder`, {
+        method: "POST",
+        headers: {
+            "content-Type": "application/json",
+            ...getAuthHeaders()
+        },
+        body: JSON.stringify(data),
+    });
+    return await response.json();
+}
+
+export const getUserOrdersFromServer = async (userId) => {
+    const response = await fetch(`${backendUrl}/api/user/orders/${userId}`, {
+        method: "GET",
+        headers: {
+            ...getAuthHeaders()
+        },
+    });
+    const orders = await response.json();
+    return orders;
+}

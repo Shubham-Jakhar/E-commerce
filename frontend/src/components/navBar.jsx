@@ -12,7 +12,6 @@ const NavBar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [searchBar, setSearchBar] = useState(false);
     const navigate = useNavigate();
-
     let cartQuantity = 0;
     if (cartItems) {
         cartQuantity = cartItems.length;
@@ -32,7 +31,7 @@ const NavBar = () => {
         <div className="nav-bar bg-white border-b border-gray-100 shadow-sm font-['Outfit'] sticky top-0 z-50">
             <div className="w-full px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16 lg:h-20">
-                    {user && user.userType === "seller" ?
+                    {token && user && user.userType === "seller" ?
                         <Link to={"/admin/home"} >
                             <div className="logo flex-shrink-0">
                                 <img src={logo} className="h-8 lg:h-10 w-auto" alt="Logo" />
@@ -43,7 +42,7 @@ const NavBar = () => {
                                 <img src={logo} className="h-8 lg:h-10 w-auto" alt="Logo" />
                             </div>
                         </Link>}
-                    {user && user.userType === "seller" ? (
+                    {token && user && user.userType === "seller" ? (
                         <div className="hidden md:flex items-center space-x-12 text-sm font-medium tracking-wide">
                             <Link to={"/admin/home"}>
                                 <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
@@ -53,6 +52,11 @@ const NavBar = () => {
                             <Link to={"/add/product"}>
                                 <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
                                     Add Product
+                                </div>
+                            </Link>
+                            <Link to={"/admin/orders"}>
+                                <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
+                                    Orders
                                 </div>
                             </Link>
                         </div>
@@ -74,13 +78,17 @@ const NavBar = () => {
                             <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
                                 Contact Us
                             </div>
+                            {user && user.userType === "buyer" ? (
+                                <Link to={"/user/orders"}>
+                                    <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
+                                        Orders
+                                    </div>
+                                </Link>
+                            ) : <></>}
                         </div>
                     )}
 
-                    {/* Right Side Actions */}
                     <div className="flex items-center space-x-6">
-
-                        {/* Search & Cart - Only for buyers */}
                         {user && user.userType === "seller" ? <></> : (
                             <>
                                 <div className="search-icon">
@@ -107,8 +115,6 @@ const NavBar = () => {
                                 </Link>
                             </>
                         )}
-
-                        {/* Login/Logout */}
                         {!token ? (
                             <Link to={"/signin"}>
                                 <div className="login">
@@ -135,26 +141,22 @@ const NavBar = () => {
                             </div>
                         )}
 
-                        {/* Mobile Menu Button - Only for buyers */}
-                        {user && user.userType === "buyer" && (
-                            <div className="md:hidden flex items-center">
-                                <button
-                                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                    className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer"
-                                >
-                                    {mobileMenuOpen ? (
-                                        <RxCross1 className="h-5 w-5" />
-                                    ) : (
-                                        <IoMenu className="h-6 w-6" />
-                                    )}
-                                </button>
-                            </div>
-                        )}
+                        <div className="md:hidden flex items-center">
+                            <button
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer"
+                            >
+                                {mobileMenuOpen ? (
+                                    <RxCross1 className="h-5 w-5" />
+                                ) : (
+                                    <IoMenu className="h-6 w-6" />
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Search Bar */}
             {searchBar && (
                 <div className="relative bg-white border-t border-gray-200 shadow-sm">
                     <div className="w-full px-6 lg:px-8">
@@ -183,7 +185,21 @@ const NavBar = () => {
                     </div>
                 </div>
             )}
-            {mobileMenuOpen && user && user.userType === "buyer" && (
+            {mobileMenuOpen && (token && user && user.userType === "seller" ? (
+                <div className="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-full z-40">
+                    <div className="flex flex-col items-center py-6 space-y-6 text-sm font-medium tracking-wide">
+                        <Link to={"/admin/home"} onClick={closeMobileMenu}>
+                            <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
+                                Home
+                            </div>
+                        </Link>
+                        <Link to={"/add/product"} onClick={closeMobileMenu}>
+                            <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
+                                Add Product
+                            </div>
+                        </Link>
+                    </div>
+                </div>) : (
                 <div className="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-full z-40">
                     <div className="flex flex-col items-center py-6 space-y-6 text-sm font-medium tracking-wide">
                         <Link to={"/"} onClick={closeMobileMenu}>
@@ -202,9 +218,16 @@ const NavBar = () => {
                         <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
                             Contact Us
                         </div>
+                        {user && user.userType === "buyer" ? (
+                            <Link to={"/user/orders"} onClick={closeMobileMenu}>
+                                <div className="text-black hover:text-gray-600 transition-colors duration-200 cursor-pointer uppercase">
+                                    Orders
+                                </div>
+                            </Link>
+                        ) : <></>}
                     </div>
-                </div>
-            )}
+                </div>))
+            }
         </div>
     );
 };

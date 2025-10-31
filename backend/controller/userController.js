@@ -4,6 +4,8 @@ const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'shubham jakhar';
+const OrderSchema = require('../models/orders');
+
 exports.getItems = async (req, res, next) => {
     const productItems = await Items.find();
     res.json(productItems);
@@ -167,4 +169,38 @@ exports.deleteCartItem = async (req, res, next) => {
         await user.save();
     }
     res.status(200).json({ success: true });
+}
+
+exports.postPlaceOrder = async (req, res, next) => {
+    const { items, totalAmount, userId } = req.body;
+    try {
+        const userCart = await User.findById(userId);
+        userCart.cart = [];
+        await userCart.save();
+        const formattedItems = items.map(i => ({
+            item: i.itemId,
+            size: i.size,
+            quantity: i.quantity,
+            price: i.price
+        }));
+        const order = new OrderSchema({ user: userId, items: formattedItems, totalAmount });
+        await order.save();
+        res.status(201).json({ success: true, message: "Order placed successfully" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+}
+
+exports.getUserOrders = async (req, res, next) => {
+    const userId = req.params.userId;
+    try {
+        const orders = await OrderSchema.find({ user: userId }).populate({
+            path: 'items.item',
+            model: 'Items',
+            select: ''
+        }).lean();
+        res.status(200).json({ success: true, orders });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
 }
