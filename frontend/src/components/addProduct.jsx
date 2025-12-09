@@ -75,9 +75,7 @@ const AddProduct = () => {
             const uploadPromises = formData.imageFiles.map(async (file) => {
                 const cloudData = new FormData();
                 cloudData.append("file", file);
-
                 cloudData.append("upload_preset", "unsigned_products");
-
                 const res = await fetch("https://api.cloudinary.com/v1_1/diiisow0o/image/upload", {
                     method: "POST",
                     body: cloudData,

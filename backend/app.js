@@ -12,7 +12,8 @@ const DB_PATH = "mongodb+srv://root:Shubham%402005@shubham.h2zydpf.mongodb.net/E
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://e-commerce-frontend-mocha-one.vercel.app"
+  "https://e-commerce-frontend-mocha-one.vercel.app",
+  "https://forever-india.vercel.app"
 ];
 app.set("trust proxy", 1);
 
@@ -34,7 +35,7 @@ app.use(express.json());
 app.use(express.static(path.join(rootDir, "public")));
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "✅ Backend is deployed and running successfully!"
+    message: "Backend is deployed and running successfully!"
   });
 });
 app.use("/api", userRouter);
