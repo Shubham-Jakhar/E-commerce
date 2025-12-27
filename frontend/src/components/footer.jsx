@@ -53,7 +53,7 @@ const Footer = () => {
             <div className="footer-lower border-t border-gray-100 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
                     <div className="text-center text-gray-500 text-xs tracking-wide">
-                        Copyright 2024@ greatstack.dev - All Right Reserved.
+                        Copyright 2025@ shubham jakhar.dev - All Right Reserved.
                     </div>
                 </div>
             </div>
