@@ -1,6 +1,7 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require('express');
 const app = express();
-
 
 const rootDir = require('./utils/pathUtils');
 const path = require('path');
@@ -8,7 +9,7 @@ const { default: mongoose } = require('mongoose');
 const cors = require('cors');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
-const DB_PATH = "mongodb+srv://root:Shubham%402005@shubham.h2zydpf.mongodb.net/EcommerceApp?retryWrites=true&w=majority&appName=shubham";
+const DB_PATH = process.env.DATABASE_URL;
 
 const allowedOrigins = [
   "http://localhost:5173",
